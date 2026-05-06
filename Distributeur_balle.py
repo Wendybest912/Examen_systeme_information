@@ -76,9 +76,9 @@ class GiftBall:
         self.sold_out_state = SOLD_OUT()
     
         if self.numbers_of_balls > 0 :
-            self.current_state = NO_TOKEN()
+            self.current_state = self.one_token_state
         else : 
-            self.current_state = SOLD_OUT()
+            self.current_state = self.sold_out_state
 
 
     def insert_token(self):
