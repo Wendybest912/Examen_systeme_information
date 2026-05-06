@@ -1,74 +1,100 @@
-from enum import Enum, auto
+from abc import ABC, abstractmethod
+
+class State(ABC):
+
+    @abstractmethod
+    def insert_token(self, machine):
+        pass
+
+    @abstractmethod
+    def eject_token (self, machine):
+        pass
+
+    @abstractmethod
+    def turn_crank (self, machine):
+        pass
+
+    @abstractmethod
+    def distribution(self, machine):
+        pass
+
+
+class NO_TOKEN(State):
+    def insert_token(self, machine ):
+        print("Pièce insérée !")
+        machine.set_state(machine.one_token_state)
+
+
+    def eject_token (self, machine):
+        print("aucune pièce a retiré")
+
+    def turn_crank (self, machine):
+        print("veuillez inseré une pièce")
+
+    def distribution(self, machine):
+        print("veuillez inseré une pièce")
+
+class ONE_TOKEN(State):
+    def insert_token(self, machine ):
+        print("Pièce deja insérée !")
+
+    def eject_token (self, machine):
+        print("pièce retiré")
+        machine.set_state(machine.no_token_state)
+
+    def turn_crank (self, machine):
+        print("manivelle tourné")
+        machine.current_state.distribution(machine)
+
+    def distribution(self, machine):
+        if machine.numbers_of_balls > 0:
+            machine.numbers_of_balls -= 1
+            print("boule distribué")
+        else:
+            print("machine vide")
+            machine.set_state(machine.sold_out_state)
+
+class SOLD_OUT(State):
+    def insert_token(self, machine ):
+        print("machine vide")
+
+    def eject_token (self, machine):
+        print("machine vide")
+
+    def turn_crank (self, machine):
+        print("machine vide")
+
+    def distribution(self, machine):
+        print("machine vide")
+
 
 class GiftBall:
     def __init__(self, numbers_of_balls):
         self.numbers_of_balls = numbers_of_balls
-        self.current_state = State.NO_TOKEN
+        self.one_token_state = ONE_TOKEN()
+        self.no_token_state = NO_TOKEN()
+        self.sold_out_state = SOLD_OUT()
+    
+        if self.numbers_of_balls > 0 :
+            self.current_state = NO_TOKEN()
+        else : 
+            self.current_state = SOLD_OUT()
+
 
     def insert_token(self):
-        if self.current_state == State.NO_TOKEN:
-            print("piece inséré !")
-            self.current_state = State.ONE_TOKEN 
-
-        elif self.current_state == State.ONE_TOKEN:
-            print("piece déjà inséré")
-
-        elif self.current_state == State.SOLD_OUT:
-            print("plus de boules")
-
-
-    def eject_token (self):
-        if self.current_state == State.ONE_TOKEN:
-            self.current_state = State.NO_TOKEN
-            print("piece éjecté")
-
-        elif self.current_state == State.NO_TOKEN :
-            print("aucune piece a rétourné ")
-
-        elif self.current_state == State.SOLD_OUT:
-            print("plus de boules")
-
-    def turn_crank (self):
-        if self.current_state == State.ONE_TOKEN:
-            print("manivelle tournéé")
-            self.distribution()
-
-        elif self.current_state == State.NO_TOKEN :
-            print("aucune piece inséré ")
-
-        elif self.current_state == State.SOLD_OUT:
-            print("plus de boules")
-
-    def distribution(self):
-        if self.current_state == State.ONE_TOKEN:
-            print("Une boule est distribuée ")
-            self.numbers_of_balls -= 1
-
-            if self.numbers_of_balls > 0:
-                self.current_state = State.NO_TOKEN
-            else:
-                print("La machine est maintenant vide.")
-                self.current_state = State.SOLD_OUT
-
-class State(Enum):
-    NO_TOKEN = auto()
-    ONE_TOKEN = auto()
-    SOLD_OUT = auto()
+        self.current_state.insert_token(self)
+    
+    def eject_token(self):
+        self.current_state.eject_token(self)
+    
+    def turn_crank(self):
+        self.current_state.turn_crank(self)
+    
+    def set_state(self, state):
+        self.current_state = state
 
 
 
-machine = GiftBall(3)
+    
 
-machine.insert_token()
-machine.turn_crank()
 
-machine.insert_token()
-machine.eject_token()
-
-machine.insert_token()
-machine.turn_crank()
-machine.turn_crank()
-
-machine.insert_token()
-machine.turn_crank()
-machine.insert_token()
