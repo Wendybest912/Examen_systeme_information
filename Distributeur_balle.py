@@ -73,15 +73,15 @@ class SURPRISE(State):
         machine.set_state(machine.no_token_state)
 
     def eject_token(self, machine):
-        print("Vous avez remporté une boule gratuite !")
+        print("Félicitations ! Vous avez gagné une boule surprise !")
         machine.set_state(machine.no_token_state)
 
     def turn_crank(self, machine):
-        print("Vous avez remporté une boule gratuite !")
+        print("Félicitations ! Vous avez gagné une boule surprise !")
         machine.set_state(machine.no_token_state)
 
     def distribution(self, machine):
-        print("Boule surprise distribuée gratuitement !")
+        print("Félicitations ! Vous avez gagné une boule surprise !")
         if machine.numbers_of_balls > 0:
             machine.numbers_of_balls -= 1
         machine.set_state(machine.no_token_state)
