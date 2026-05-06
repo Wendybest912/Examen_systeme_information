@@ -67,6 +67,24 @@ class SOLD_OUT(State):
     def distribution(self, machine):
         print("machine vide")
 
+class SURPRISE(State):
+    def insert_token(self, machine):
+        print("Félicitations ! Vous avez gagné une boule surprise !")
+        machine.set_state(machine.no_token_state)
+
+    def eject_token(self, machine):
+        print("Vous avez remporté une boule gratuite !")
+        machine.set_state(machine.no_token_state)
+
+    def turn_crank(self, machine):
+        print("Vous avez remporté une boule gratuite !")
+        machine.set_state(machine.no_token_state)
+
+    def distribution(self, machine):
+        print("Boule surprise distribuée gratuitement !")
+        if machine.numbers_of_balls > 0:
+            machine.numbers_of_balls -= 1
+        machine.set_state(machine.no_token_state)
 
 class GiftBall:
     def __init__(self, numbers_of_balls):
@@ -74,6 +92,7 @@ class GiftBall:
         self.one_token_state = ONE_TOKEN()
         self.no_token_state = NO_TOKEN()
         self.sold_out_state = SOLD_OUT()
+        self.surprise_state = SURPRISE()
     
         if self.numbers_of_balls > 0 :
             self.current_state = self.one_token_state
